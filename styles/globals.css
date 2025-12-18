@@ -312,3 +312,16 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+
+/* Fix bnc-onboard wallet modal z-index */
+.bn-onboard-modal {
+  z-index: 9999 !important;
+}
+
+.bn-onboard-modal-content-header {
+  z-index: 9999 !important;
+}
+
+.bn-onboard-modal-content {
+  z-index: 9999 !important;
+}
