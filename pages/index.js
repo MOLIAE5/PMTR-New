@@ -371,8 +371,9 @@ export default function Home() {
         </div>
         
         {/* Nichel Anderson Logo - Mobile */}
-        <div className="mt-6 mb-4">
+        <div className="mt-6 mb-4 flex items-center gap-3">
           <img src="/Nichel Anderson.png" alt="Nichel Anderson" className="w-40 h-auto object-contain" />
+          <img src="/Nichel Anderson Signature.png" alt="Nichel Anderson Signature" className="w-24 h-auto object-contain" style={{filter: 'invert(1)'}} />
         </div>
       </div>
 
@@ -468,8 +469,9 @@ export default function Home() {
       </div>
 
       {/* Nichel Anderson Logo - Bottom Center (Desktop only) */}
-      <div className="hidden md:block absolute bottom-8 left-[440px] z-20">
+      <div className="hidden md:flex items-end absolute bottom-8 left-[480px] z-20">
         <img src="/Nichel Anderson.png" alt="Nichel Anderson" className="w-auto h-[280px] lg:h-[320px] object-contain" />
+        <img src="/Nichel Anderson Signature.png" alt="Nichel Anderson Signature" className="w-auto h-6 object-contain" style={{filter: 'invert(1)'}} />
       </div>
 
       {/* RIGHT SIDE: Mint Card (Desktop only) */}
