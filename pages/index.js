@@ -306,7 +306,7 @@ export default function Home() {
         <div className="flex flex-wrap justify-center gap-3 mt-4">
           {[
                         { href: 'https://moliaeworld.com', icon: 'globe.svg', label: 'Website' },
-            { href: 'https://moliaeworld.com/shop/', icon: 'shop.svg', label: 'Shop' },
+            { href: 'https://moliaebeauty.com/', icon: 'shop.svg', label: 'Shop' },
             { href: 'https://etherscan.io/address/0x1f1F860A0A3bEC70107d31CFDcAEfF2E59631a27', icon: 'etherscansvg.svg', label: 'Etherscan' },
             { href: 'https://discord.com/invite/nurws4nAgE', icon: 'discord.svg', label: 'Discord' },
             { href: 'https://instagram.com/moliae8', icon: 'instagram.svg', label: 'Instagram' },
@@ -402,7 +402,7 @@ export default function Home() {
         {/* Social Icons */}
         <div className="flex flex-wrap gap-3 mt-6">
           {[            { href: 'https://moliaeworld.com', icon: 'globe.svg', label: 'Website' },
-            { href: 'https://moliaeworld.com/shop/', icon: 'shop.svg', label: 'Shop' },
+            { href: 'https://moliaebeauty.com/', icon: 'shop.svg', label: 'Shop' },
             { href: 'https://etherscan.io/address/0x1f1F860A0A3bEC70107d31CFDcAEfF2E59631a27', icon: 'etherscansvg.svg', label: 'Etherscan' },
             { href: 'https://discord.com/invite/nurws4nAgE', icon: 'discord.svg', label: 'Discord' },
             { href: 'https://instagram.com/moliae8', icon: 'instagram.svg', label: 'Instagram' },
