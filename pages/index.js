@@ -43,6 +43,7 @@ export default function Home() {
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [subscribeStatus, setSubscribeStatus] = useState(null)
   const [pdfLink, setPdfLink] = useState(null)
+  const [customStatus, setCustomStatus] = useState('Coming Soon')
 
 
   useEffect(() => {
@@ -68,6 +69,23 @@ export default function Home() {
       )
     }
     init()
+  }, [])
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch('/api/status')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.status) {
+            setCustomStatus(data.status)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch custom status:', error)
+      }
+    }
+    fetchStatus()
   }, [])
 
   useEffect(() => {
@@ -218,7 +236,7 @@ export default function Home() {
           {/* Status Badge */}
           <div className="text-center mb-4">
             <span className="status-badge inline-block text-[10px] uppercase font-bold">
-              {paused ? 'Coming Soon' : isAirdroping ? 'Airdrop Live' : isWLMint ? 'Whitelist' : isPublicSale ? 'Public Sale' : 'Coming Soon'}
+              {customStatus}
             </span>
           </div>
 
@@ -305,7 +323,7 @@ export default function Home() {
         {/* Mobile Social Icons */}
         <div className="flex flex-wrap justify-center gap-3 mt-4">
           {[
-                        { href: 'https://moliaeworld.com', icon: 'globe.svg', label: 'Website' },
+            { href: 'https://moliaeworld.com', icon: 'globe.svg', label: 'Website' },
             { href: 'https://moliaebeauty.com/', icon: 'shop.svg', label: 'Shop' },
             { href: 'https://etherscan.io/address/0x1f1F860A0A3bEC70107d31CFDcAEfF2E59631a27', icon: 'etherscansvg.svg', label: 'Etherscan' },
             { href: 'https://discord.com/invite/nurws4nAgE', icon: 'discord.svg', label: 'Discord' },
@@ -330,10 +348,10 @@ export default function Home() {
         <div className="w-full max-w-[360px] mt-4 px-2">
           <div className="cosmic-card p-4">
             <div className="flex items-center gap-3 mb-3">
-              <img src="/book.svg" alt="Book" className="w-8 h-8 social-gold p-1.5" style={{filter: 'invert(80%) sepia(50%) saturate(500%) hue-rotate(10deg)'}} />
+              <img src="/book.svg" alt="Book" className="w-8 h-8 social-gold p-1.5" style={{ filter: 'invert(80%) sepia(50%) saturate(500%) hue-rotate(10deg)' }} />
               <h3 className="text-sm font-bold text-[#f5d76e] tracking-wider">GET THE DECODE BOOK</h3>
             </div>
-            
+
             {!pdfLink ? (
               <form onSubmit={handleSubscribe} className="space-y-3">
                 <input
@@ -369,11 +387,11 @@ export default function Home() {
             )}
           </div>
         </div>
-        
+
         {/* Nichel Anderson Logo - Mobile */}
         <div className="mt-6 mb-4 flex items-center gap-3">
           <img src="/Nichel Anderson.png" alt="Nichel Anderson" className="w-40 h-auto object-contain" />
-          <img src="/Nichel Anderson Signature.png" alt="Nichel Anderson Signature" className="w-24 h-auto object-contain" style={{filter: 'invert(1)'}} />
+          <img src="/Nichel Anderson Signature.png" alt="Nichel Anderson Signature" className="w-24 h-auto object-contain" style={{ filter: 'invert(1)' }} />
         </div>
       </div>
 
@@ -401,13 +419,13 @@ export default function Home() {
 
         {/* Social Icons */}
         <div className="flex flex-wrap gap-3 mt-6">
-          {[            { href: 'https://moliaeworld.com', icon: 'globe.svg', label: 'Website' },
-            { href: 'https://moliaebeauty.com/', icon: 'shop.svg', label: 'Shop' },
-            { href: 'https://etherscan.io/address/0x1f1F860A0A3bEC70107d31CFDcAEfF2E59631a27', icon: 'etherscansvg.svg', label: 'Etherscan' },
-            { href: 'https://discord.com/invite/nurws4nAgE', icon: 'discord.svg', label: 'Discord' },
-            { href: 'https://instagram.com/moliae8', icon: 'instagram.svg', label: 'Instagram' },
-            { href: 'https://x.com/moliae', icon: 'twitter.svg', label: 'X' },
-            { href: 'https://facebook.com/moliae', icon: 'facebook.svg', label: 'Facebook' },
+          {[{ href: 'https://moliaeworld.com', icon: 'globe.svg', label: 'Website' },
+          { href: 'https://moliaebeauty.com/', icon: 'shop.svg', label: 'Shop' },
+          { href: 'https://etherscan.io/address/0x1f1F860A0A3bEC70107d31CFDcAEfF2E59631a27', icon: 'etherscansvg.svg', label: 'Etherscan' },
+          { href: 'https://discord.com/invite/nurws4nAgE', icon: 'discord.svg', label: 'Discord' },
+          { href: 'https://instagram.com/moliae8', icon: 'instagram.svg', label: 'Instagram' },
+          { href: 'https://x.com/moliae', icon: 'twitter.svg', label: 'X' },
+          { href: 'https://facebook.com/moliae', icon: 'facebook.svg', label: 'Facebook' },
           ].map((social, idx) => (
             <a
               key={idx}
@@ -428,10 +446,10 @@ export default function Home() {
       <div className="hidden md:block absolute bottom-8 left-12 z-20 w-[400px]">
         <div className="cosmic-card p-5">
           <div className="flex items-center gap-3 mb-4">
-            <img src="/book.svg" alt="Book" className="w-10 h-10 social-gold p-2" style={{filter: 'invert(80%) sepia(50%) saturate(500%) hue-rotate(10deg)'}} />
+            <img src="/book.svg" alt="Book" className="w-10 h-10 social-gold p-2" style={{ filter: 'invert(80%) sepia(50%) saturate(500%) hue-rotate(10deg)' }} />
             <h3 className="text-base font-bold text-[#f5d76e] tracking-wider">GET THE DECODE BOOK</h3>
           </div>
-          
+
           {!pdfLink ? (
             <form onSubmit={handleSubscribe} className="space-y-4">
               <input
@@ -471,7 +489,7 @@ export default function Home() {
       {/* Nichel Anderson Logo - Bottom Center (Desktop only) */}
       <div className="hidden md:flex items-end absolute bottom-8 left-[480px] z-20">
         <img src="/Nichel Anderson.png" alt="Nichel Anderson" className="w-auto h-[280px] lg:h-[320px] object-contain" />
-        <img src="/Nichel Anderson Signature.png" alt="Nichel Anderson Signature" className="w-auto h-6 object-contain" style={{filter: 'invert(1)'}} />
+        <img src="/Nichel Anderson Signature.png" alt="Nichel Anderson Signature" className="w-auto h-6 object-contain" style={{ filter: 'invert(1)' }} />
       </div>
 
       {/* RIGHT SIDE: Mint Card (Desktop only) */}
@@ -486,7 +504,7 @@ export default function Home() {
           {/* Status Badge */}
           <div className="text-center mb-6">
             <span className="status-badge inline-block text-xs uppercase font-bold">
-              {paused ? 'Coming Soon' : isAirdroping ? 'Airdrop Live' : isWLMint ? 'Whitelist' : isPublicSale ? 'Public Sale' : 'Coming Soon'}
+              {customStatus}
             </span>
           </div>
 

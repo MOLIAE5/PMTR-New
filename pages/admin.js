@@ -11,6 +11,8 @@ export default function Admin() {
   const [subscribers, setSubscribers] = useState([]);
   const [pdfLink, setPdfLink] = useState('');
   const [newPdfLink, setNewPdfLink] = useState('');
+  const [mintingStatus, setMintingStatus] = useState('');
+  const [newMintingStatus, setNewMintingStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
@@ -52,13 +54,15 @@ export default function Admin() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [subscribersRes, settingsRes] = await Promise.all([
+      const [subscribersRes, settingsRes, statusRes] = await Promise.all([
         fetch('/api/admin/subscribers'),
-        fetch('/api/admin/settings')
+        fetch('/api/admin/settings'),
+        fetch('/api/admin/status')
       ]);
 
       const subscribersData = await subscribersRes.json();
       const settingsData = await settingsRes.json();
+      const statusData = await statusRes.json();
 
       if (subscribersData.subscribers) {
         setSubscribers(subscribersData.subscribers);
@@ -66,6 +70,10 @@ export default function Admin() {
       if (settingsData.pdfLink) {
         setPdfLink(settingsData.pdfLink);
         setNewPdfLink(settingsData.pdfLink);
+      }
+      if (statusData.status) {
+        setMintingStatus(statusData.status);
+        setNewMintingStatus(statusData.status);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -96,6 +104,32 @@ export default function Admin() {
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'Failed to update settings' });
+    }
+    setSaving(false);
+  };
+
+  const handleUpdateStatus = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch('/api/admin/status', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newMintingStatus })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMintingStatus(newMintingStatus);
+        setMessage({ type: 'success', text: 'Minting status updated successfully!' });
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to update' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to update status' });
     }
     setSaving(false);
   };
@@ -161,9 +195,8 @@ export default function Admin() {
               <button
                 type="submit"
                 disabled={authLoading || !password}
-                className={`w-full px-6 py-3 bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold rounded-lg transition-all ${
-                  authLoading || !password ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:shadow-[#d4af37]/30'
-                }`}
+                className={`w-full px-6 py-3 bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold rounded-lg transition-all ${authLoading || !password ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:shadow-[#d4af37]/30'
+                  }`}
               >
                 {authLoading ? 'Logging in...' : 'Login'}
               </button>
@@ -196,21 +229,28 @@ export default function Admin() {
           <div className="flex gap-2 mb-6">
             <button
               onClick={() => setActiveTab('settings')}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                activeTab === 'settings'
-                  ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black'
-                  : 'bg-black/50 border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/10'
-              }`}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all ${activeTab === 'settings'
+                ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black'
+                : 'bg-black/50 border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/10'
+                }`}
             >
               Settings
             </button>
             <button
+              onClick={() => setActiveTab('status')}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all ${activeTab === 'status'
+                ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black'
+                : 'bg-black/50 border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/10'
+                }`}
+            >
+              Status
+            </button>
+            <button
               onClick={() => setActiveTab('subscribers')}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                activeTab === 'subscribers'
-                  ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black'
-                  : 'bg-black/50 border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/10'
-              }`}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all ${activeTab === 'subscribers'
+                ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black'
+                : 'bg-black/50 border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/10'
+                }`}
             >
               Subscribers ({subscribers.length})
             </button>
@@ -220,7 +260,7 @@ export default function Admin() {
           {activeTab === 'settings' && (
             <div className="bg-black/50 border border-[#d4af37]/40 rounded-xl p-6">
               <h2 className="text-2xl font-bold text-[#f5d76e] mb-4">Decode Book Download Link</h2>
-              
+
               <div className="mb-4">
                 <p className="text-gray-400 text-sm mb-2">Current Link:</p>
                 <p className="text-white break-all bg-black/30 p-3 rounded-lg border border-[#d4af37]/20">
@@ -242,11 +282,51 @@ export default function Admin() {
                 <button
                   type="submit"
                   disabled={saving || !newPdfLink}
-                  className={`px-6 py-3 bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold rounded-lg transition-all ${
-                    saving || !newPdfLink ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:shadow-[#d4af37]/30'
-                  }`}
+                  className={`px-6 py-3 bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold rounded-lg transition-all ${saving || !newPdfLink ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:shadow-[#d4af37]/30'
+                    }`}
                 >
                   {saving ? 'Saving...' : 'Update Link'}
+                </button>
+              </form>
+
+              {message && (
+                <p className={`mt-4 text-sm ${message.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                  {message.text}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Status Tab */}
+          {activeTab === 'status' && (
+            <div className="bg-black/50 border border-[#d4af37]/40 rounded-xl p-6">
+              <h2 className="text-2xl font-bold text-[#f5d76e] mb-4">Minting Status</h2>
+
+              <div className="mb-4">
+                <p className="text-gray-400 text-sm mb-2">Current Status:</p>
+                <p className="text-white break-all bg-black/30 p-3 rounded-lg border border-[#d4af37]/20">
+                  {mintingStatus || 'Coming Soon'}
+                </p>
+              </div>
+
+              <form onSubmit={handleUpdateStatus} className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">New Status:</label>
+                  <input
+                    type="text"
+                    value={newMintingStatus}
+                    onChange={(e) => setNewMintingStatus(e.target.value)}
+                    placeholder="e.g. Coming Soon, Public Sale Live"
+                    className="w-full px-4 py-3 bg-black/50 border border-[#d4af37]/40 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#f5d76e] transition-colors font-sans"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={saving || !newMintingStatus}
+                  className={`px-6 py-3 bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold rounded-lg transition-all ${saving || !newMintingStatus ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg hover:shadow-[#d4af37]/30'
+                    }`}
+                >
+                  {saving ? 'Saving...' : 'Update Status'}
                 </button>
               </form>
 
@@ -328,7 +408,7 @@ export default function Admin() {
                             <td className="py-3 px-4">
                               {sub.wallet_address ? (
                                 <div className="flex items-center gap-2">
-                                  <a 
+                                  <a
                                     href={`https://etherscan.io/address/${sub.wallet_address}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -382,37 +462,34 @@ export default function Admin() {
                       <button
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className={`px-3 py-1 rounded border ${
-                          currentPage === 1
-                            ? 'border-gray-600 text-gray-600 cursor-not-allowed'
-                            : 'border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/20'
-                        }`}
+                        className={`px-3 py-1 rounded border ${currentPage === 1
+                          ? 'border-gray-600 text-gray-600 cursor-not-allowed'
+                          : 'border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/20'
+                          }`}
                       >
                         Previous
                       </button>
-                      
+
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                         <button
                           key={page}
                           onClick={() => setCurrentPage(page)}
-                          className={`w-8 h-8 rounded ${
-                            currentPage === page
-                              ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold'
-                              : 'border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/20'
-                          }`}
+                          className={`w-8 h-8 rounded ${currentPage === page
+                            ? 'bg-gradient-to-r from-[#d4af37] to-[#f5d76e] text-black font-bold'
+                            : 'border border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/20'
+                            }`}
                         >
                           {page}
                         </button>
                       ))}
-                      
+
                       <button
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
-                        className={`px-3 py-1 rounded border ${
-                          currentPage === totalPages
-                            ? 'border-gray-600 text-gray-600 cursor-not-allowed'
-                            : 'border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/20'
-                        }`}
+                        className={`px-3 py-1 rounded border ${currentPage === totalPages
+                          ? 'border-gray-600 text-gray-600 cursor-not-allowed'
+                          : 'border-[#d4af37]/40 text-[#f5d76e] hover:bg-[#d4af37]/20'
+                          }`}
                       >
                         Next
                       </button>
