@@ -23,7 +23,14 @@ body {
   font-family: 'Cinzel', serif;
   background: black;
   color: white;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  body {
+    overflow: hidden;
+  }
 }
 
 /* === COSMIC PYRAMID THEME === */

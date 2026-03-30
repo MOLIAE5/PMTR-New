@@ -18,7 +18,7 @@ const onboardOptions = {
   networkId: 1, // mainnet id
   darkMode: true,
   walletSelect: {
-    description:'Plaese select a wallet',
+    description:'Please select a wallet',
     wallets: [
       { walletName: 'metamask', preferred: true },
       { walletName: 'coinbase', preferred: true },
